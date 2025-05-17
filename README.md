@@ -1,3 +1,6 @@
+![CI](https://github.com/masonakcamara/base-jump-logbook/actions/workflows/ci.yml/badge.svg)
+[![Release](https://img.shields.io/github/v/release/masonakcamara/base-jump-logbook)](https://github.com/your-org/base-jump-logbook/releases)
+
 # BASE Jump Logbook
 
 JavaFX desktop application for logging BASE jumps and viewing integrated 5-day weather forecasts.
