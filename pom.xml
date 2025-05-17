@@ -91,8 +91,14 @@
                 <executions>
                     <execution>
                         <phase>package</phase>
-                        <goals><goal>shade</goal></goals>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
                         <configuration>
+                            <!-- Overwrite the original JAR so you end up with one standalone jar -->
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <!-- Prevent a reduced POM that can break CI -->
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.masonakcamara.basejump.ui.BaseJumpLogbookApp</mainClass>
