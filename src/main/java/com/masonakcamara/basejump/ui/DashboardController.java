@@ -31,6 +31,7 @@ public class DashboardController {
     @FXML private TableColumn<JumpEntry, ?> colHeight;
     @FXML private TableColumn<JumpEntry, ?> colType;
     @FXML private LineChart<Number, Number> tempChart;
+    @FXML private LineChart<Number, Number> windChart;
     @FXML private Button btnAdd, btnEdit, btnDelete, btnExport;
 
     private final JumpEntryDao dao = new JumpEntryDao();
@@ -183,17 +184,27 @@ public class DashboardController {
 
     private void loadForecast(JumpEntry entry) {
         tempChart.getData().clear();
+        windChart.getData().clear();
         new Thread(() -> {
             try {
                 List<Forecast> list = weatherService.get5DayForecast(
                         entry.getLatitude(), entry.getLongitude()
                 );
-                XYChart.Series<Number, Number> series = new XYChart.Series<>();
-                series.setName("Temp (°F)");
+                XYChart.Series<Number, Number> tempSeries = new XYChart.Series<>();
+                tempSeries.setName("Temp (°F)");
+                XYChart.Series<Number, Number> windSeries = new XYChart.Series<>();
+                windSeries.setName("Wind (mph)");
+
                 for (int i = 0; i < list.size(); i++) {
-                    series.getData().add(new XYChart.Data<>(i, list.get(i).getTemperature()));
+                    Forecast f = list.get(i);
+                    tempSeries.getData().add(new XYChart.Data<>(i, f.getTemperature()));
+                    windSeries.getData().add(new XYChart.Data<>(i, f.getWindSpeed()));
                 }
-                Platform.runLater(() -> tempChart.getData().add(series));
+
+                Platform.runLater(() -> {
+                    tempChart.getData().add(tempSeries);
+                    windChart.getData().add(windSeries);
+                });
             } catch (Exception e) {
                 e.printStackTrace();
             }
