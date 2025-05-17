@@ -36,7 +36,6 @@
             </VBox>
         </AnchorPane>
 
-        <!-- Right pane: temperature chart -->
         <!-- Right pane: temperature + wind charts -->
         <AnchorPane>
             <VBox AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
