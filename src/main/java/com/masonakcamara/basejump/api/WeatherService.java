@@ -3,6 +3,7 @@ package com.masonakcamara.basejump.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -11,6 +12,7 @@ import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -21,16 +23,32 @@ public class WeatherService {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     static {
-        try (InputStream in = WeatherService.class.getResourceAsStream("/weather.properties")) {
-            Properties props = new Properties();
-            props.load(in);
-            API_KEY = props.getProperty("api.key");
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load weather.properties", e);
+        String key = System.getenv("OPENWEATHER_API_KEY");
+        if (key != null && !key.isBlank()) {
+            API_KEY = key;
+        } else {
+            String loaded = null;
+            try (InputStream in = WeatherService.class.getResourceAsStream("/weather.properties")) {
+                if (in != null) {
+                    Properties props = new Properties();
+                    props.load(in);
+                    loaded = props.getProperty("api.key");
+                }
+            } catch (IOException e) {
+                // ignore
+            }
+            API_KEY = (loaded != null && !loaded.isBlank()) ? loaded : null;
+        }
+        if (API_KEY == null) {
+            System.err.println("Warning: No OpenWeatherMap API key found. Forecasts will be disabled.");
         }
     }
 
     public List<Forecast> get5DayForecast(double lat, double lon) throws Exception {
+        if (API_KEY == null) {
+            // Return an empty list so the app still loads
+            return Collections.emptyList();
+        }
         String uri = String.format("%s?lat=%f&lon=%f&units=imperial&appid=%s", ENDPOINT, lat, lon, API_KEY);
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest req = HttpRequest.newBuilder()
