@@ -31,6 +31,7 @@
                     <Button fx:id="btnAdd"    text="Add"/>
                     <Button fx:id="btnEdit"   text="Edit"/>
                     <Button fx:id="btnDelete" text="Delete"/>
+                    <Button fx:id="btnExport" text="Export CSV"/>
                 </HBox>
             </VBox>
         </AnchorPane>
