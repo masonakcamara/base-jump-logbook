@@ -19,3 +19,6 @@ buildNumber.properties
 # OS files
 .DS_Store
 Thumbs.db
+
+# Prevent accidental commits of personal API key
+/src/main/resources/weather.properties
