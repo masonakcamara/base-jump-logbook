@@ -3,17 +3,22 @@ package com.masonakcamara.basejump.ui;
 import com.masonakcamara.basejump.api.Forecast;
 import com.masonakcamara.basejump.api.WeatherService;
 import com.masonakcamara.basejump.model.JumpEntry;
+import com.masonakcamara.basejump.model.JumpType;
+import com.masonakcamara.basejump.model.SliderPosition;
 import com.masonakcamara.basejump.persistence.JumpEntryDao;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
+import javafx.util.converter.DoubleStringConverter;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public class DashboardController {
 
@@ -23,31 +28,153 @@ public class DashboardController {
     @FXML private TableColumn<JumpEntry, ?> colHeight;
     @FXML private TableColumn<JumpEntry, ?> colType;
     @FXML private LineChart<Number, Number> tempChart;
+    @FXML private Button btnAdd, btnEdit, btnDelete;
 
     private final JumpEntryDao dao = new JumpEntryDao();
     private final WeatherService weatherService = new WeatherService();
 
     @FXML
     public void initialize() {
-        // configure columns
+        // set up columns
         colDate.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
         colLocation.setCellValueFactory(new PropertyValueFactory<>("objectName"));
         colHeight.setCellValueFactory(new PropertyValueFactory<>("height"));
         colType.setCellValueFactory(new PropertyValueFactory<>("jumpType"));
 
-        // load and display entries
-        List<JumpEntry> entries = dao.findAll();
-        jumpTable.setItems(FXCollections.observableList(entries));
+        // load data
+        refreshTable();
 
-        // update chart when selection changes
+        // selection listener to load forecast
         jumpTable.getSelectionModel().selectedItemProperty()
-                .addListener((obs, old, sel) -> {
-                    if (sel != null) loadForecast(sel);
-                });
+                .addListener((obs, old, sel) -> { if (sel != null) loadForecast(sel); });
 
-        if (!entries.isEmpty()) {
+        // wire buttons
+        btnAdd.setOnAction(e -> showEntryDialog(null));
+        btnEdit.setOnAction(e -> {
+            JumpEntry sel = jumpTable.getSelectionModel().getSelectedItem();
+            if (sel != null) showEntryDialog(sel);
+        });
+        btnDelete.setOnAction(e -> {
+            JumpEntry sel = jumpTable.getSelectionModel().getSelectedItem();
+            if (sel != null && confirm("Delete entry?")) {
+                dao.delete(sel);
+                refreshTable();
+            }
+        });
+
+        // auto-select first
+        if (!jumpTable.getItems().isEmpty()) {
             jumpTable.getSelectionModel().selectFirst();
         }
+    }
+
+    private void refreshTable() {
+        List<JumpEntry> entries = dao.findAll();
+        jumpTable.setItems(FXCollections.observableList(entries));
+    }
+
+    private void showEntryDialog(JumpEntry existing) {
+        boolean isNew = existing == null;
+        JumpEntry entry = isNew
+                ? new JumpEntry()
+                : new JumpEntry(existing.getDateTime(), existing.getObjectName(),
+                existing.getLatitude(), existing.getLongitude(),
+                existing.getHeight(), existing.getContainer(),
+                existing.getMainParachute(), existing.getPilotChute(),
+                existing.getSliderPosition(), existing.getJumpType(),
+                existing.getMediaLink());
+
+        // build form
+        Dialog<JumpEntry> dlg = new Dialog<>();
+        dlg.setTitle(isNew ? "Add Jump" : "Edit Jump");
+        ButtonType ok = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10); grid.setVgap(10);
+
+        DatePicker datePicker = new DatePicker();
+        TextField timeField = new TextField();
+        datePicker.setValue(entry.getDateTime() != null ? entry.getDateTime().toLocalDate() : LocalDateTime.now().toLocalDate());
+        timeField.setText(entry.getDateTime() != null ? entry.getDateTime().toLocalTime().toString() : "12:00");
+
+        TextField locField = new TextField(entry.getObjectName());
+        TextField latField = new TextField(Double.toString(entry.getLatitude()));
+        TextField lonField = new TextField(Double.toString(entry.getLongitude()));
+        TextField heightField = new TextField(Double.toString(entry.getHeight()));
+        TextField contField = new TextField(entry.getContainer());
+        TextField mainField = new TextField(entry.getMainParachute());
+        TextField pilotField = new TextField(entry.getPilotChute());
+        ComboBox<SliderPosition> sliderCb = new ComboBox<>(FXCollections.observableArrayList(SliderPosition.values()));
+        sliderCb.setValue(entry.getSliderPosition());
+        ComboBox<JumpType> typeCb = new ComboBox<>(FXCollections.observableArrayList(JumpType.values()));
+        typeCb.setValue(entry.getJumpType());
+        TextField mediaField = new TextField(entry.getMediaLink());
+
+        grid.addRow(0, new Label("Date:"), datePicker, new Label("Time (HH:MM):"), timeField);
+        grid.addRow(1, new Label("Location:"), locField);
+        grid.addRow(2, new Label("Lat:"), latField, new Label("Lon:"), lonField);
+        grid.addRow(3, new Label("Height:"), heightField);
+        grid.addRow(4, new Label("Container:"), contField);
+        grid.addRow(5, new Label("Main Chute:"), mainField);
+        grid.addRow(6, new Label("Pilot Chute:"), pilotField);
+        grid.addRow(7, new Label("Slider:"), sliderCb, new Label("Type:"), typeCb);
+        grid.addRow(8, new Label("Media URL:"), mediaField);
+
+        dlg.getDialogPane().setContent(grid);
+
+        dlg.setResultConverter(btn -> {
+            if (btn == ok) {
+                LocalDateTime dt = LocalDateTime.parse(
+                        datePicker.getValue() + "T" + timeField.getText()
+                );
+                entry.setDateTime(dt);
+                entry.setObjectName(locField.getText());
+                entry.setLatitude(Double.parseDouble(latField.getText()));
+                entry.setLongitude(Double.parseDouble(lonField.getText()));
+                entry.setHeight(Double.parseDouble(heightField.getText()));
+                entry.setContainer(contField.getText());
+                entry.setMainParachute(mainField.getText());
+                entry.setPilotChute(pilotField.getText());
+                entry.setSliderPosition(sliderCb.getValue());
+                entry.setJumpType(typeCb.getValue());
+                entry.setMediaLink(mediaField.getText());
+                return entry;
+            }
+            return null;
+        });
+
+        Optional<JumpEntry> result = dlg.showAndWait();
+        result.ifPresent(updated -> {
+            if (isNew) {
+                dao.save(updated);
+                refreshTable();
+                jumpTable.getSelectionModel().select(updated);
+            } else {
+                // copy fields back into the original entity before updating
+                existing.setDateTime(updated.getDateTime());
+                existing.setObjectName(updated.getObjectName());
+                existing.setLatitude(updated.getLatitude());
+                existing.setLongitude(updated.getLongitude());
+                existing.setHeight(updated.getHeight());
+                existing.setContainer(updated.getContainer());
+                existing.setMainParachute(updated.getMainParachute());
+                existing.setPilotChute(updated.getPilotChute());
+                existing.setSliderPosition(updated.getSliderPosition());
+                existing.setJumpType(updated.getJumpType());
+                existing.setMediaLink(updated.getMediaLink());
+                dao.update(existing);
+                refreshTable();
+                jumpTable.getSelectionModel().select(existing);
+            }
+        });
+    }
+
+    private boolean confirm(String msg) {
+        return new Alert(Alert.AlertType.CONFIRMATION, msg, ButtonType.OK, ButtonType.CANCEL)
+                .showAndWait()
+                .filter(b -> b == ButtonType.OK)
+                .isPresent();
     }
 
     private void loadForecast(JumpEntry entry) {
@@ -58,6 +185,7 @@ public class DashboardController {
                         entry.getLatitude(), entry.getLongitude()
                 );
                 XYChart.Series<Number, Number> series = new XYChart.Series<>();
+                series.setName("Temp (°F)");
                 for (int i = 0; i < list.size(); i++) {
                     series.getData().add(new XYChart.Data<>(i, list.get(i).getTemperature()));
                 }
