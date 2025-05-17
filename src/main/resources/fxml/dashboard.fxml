@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<SplitPane xmlns="http://javafx.com/javafx/20.0.1"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.masonakcamara.basejump.ui.DashboardController"
+           orientation="HORIZONTAL">
+    <items>
+        <!-- Left pane: jump table -->
+        <AnchorPane prefWidth="400">
+            <TableView fx:id="jumpTable" prefWidth="400" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+                       AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+                <columns>
+                    <TableColumn text="Date"       prefWidth="120"
+                                 cellValueFactory="${new PropertyValueFactory('dateTime')}"/>
+                    <TableColumn text="Location"   prefWidth="100"
+                                 cellValueFactory="${new PropertyValueFactory('objectName')}"/>
+                    <TableColumn text="Height"     prefWidth="80"
+                                 cellValueFactory="${new PropertyValueFactory('height')}"/>
+                    <TableColumn text="Type"       prefWidth="80"
+                                 cellValueFactory="${new PropertyValueFactory('jumpType')}"/>
+                </columns>
+            </TableView>
+        </AnchorPane>
+
+        <!-- Right pane: temperature chart -->
+        <AnchorPane>
+            <LineChart fx:id="tempChart" title="5-Day Temperature"
+                       AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+                       AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+                <xAxis>
+                    <NumberAxis label="Forecast Index"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="°F"/>
+                </yAxis>
+            </LineChart>
+        </AnchorPane>
+    </items>
+</SplitPane>
