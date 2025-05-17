@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
@@ -9,13 +10,15 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.web.WebView?>
 
 <SplitPane xmlns="http://javafx.com/javafx/20.0.1"
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.masonakcamara.basejump.ui.DashboardController"
            orientation="HORIZONTAL">
+
+    <!-- LEFT SIDE: Table + CRUD/Export buttons -->
     <items>
-        <!-- Left pane: table + CRUD buttons -->
         <AnchorPane prefWidth="400">
             <VBox AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
                   AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" spacing="5">
@@ -36,13 +39,13 @@
             </VBox>
         </AnchorPane>
 
-        <!-- Right pane: temperature + wind charts -->
+        <!-- RIGHT SIDE: Temperature + Wind Charts + Map -->
         <AnchorPane>
             <VBox AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
                   AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" spacing="10">
                 <LineChart fx:id="tempChart" title="5-Day Temperature">
                     <xAxis>
-                        <NumberAxis fx:id="xAxis1" label="Index"/>
+                        <CategoryAxis fx:id="xAxis1" label="Time"/>
                     </xAxis>
                     <yAxis>
                         <NumberAxis fx:id="yAxis1" label="°F"/>
@@ -50,12 +53,13 @@
                 </LineChart>
                 <LineChart fx:id="windChart" title="5-Day Wind Speed">
                     <xAxis>
-                        <NumberAxis fx:id="xAxis2" label="Index"/>
+                        <CategoryAxis fx:id="xAxis2" label="Time"/>
                     </xAxis>
                     <yAxis>
                         <NumberAxis fx:id="yAxis2" label="mph"/>
                     </yAxis>
                 </LineChart>
+                <WebView fx:id="mapView" prefHeight="200"/>
             </VBox>
         </AnchorPane>
     </items>

@@ -26,6 +26,12 @@
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
+        <!-- JavaFX WebView support -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
         <!-- Hibernate + SQLite (or swap to H2 if you prefer) -->
         <dependency>
             <groupId>org.hibernate.orm</groupId>
