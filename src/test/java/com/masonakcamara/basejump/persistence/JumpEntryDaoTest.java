@@ -48,10 +48,27 @@ class JumpEntryDaoTest {
     }
 
     @Test
-    @DisplayName("Find all returns at least one entry")
+    @DisplayName("Find all returns entries after save")
     void findAll() {
+        // ensure at least one entry exists
+        var temp = new JumpEntry(
+                LocalDateTime.now(),
+                "Sample Spot",
+                10.0,
+                20.0,
+                500.0,
+                "ContA",
+                "MainA",
+                "PilotA",
+                SliderPosition.UP,
+                JumpType.SUBTERMINAL,
+                null
+        );
+        dao.save(temp);
+
         List<JumpEntry> list = dao.findAll();
-        assertFalse(list.isEmpty(), "There should be at least one entry in the database");
+        assertNotNull(list, "findAll should not return null");
+        assertTrue(list.size() >= 1, "There should be at least one entry in the database");
     }
 
     @AfterAll
