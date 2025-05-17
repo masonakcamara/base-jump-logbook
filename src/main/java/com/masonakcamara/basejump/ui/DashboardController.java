@@ -218,8 +218,9 @@ public class DashboardController {
                     windChart.getData().setAll(windSeries);
 
                     String mapUrl = String.format(
-                            "https://maps.google.com/maps?q=%f,%f&z=12&output=embed",
-                            entry.getLatitude(), entry.getLongitude());
+                            "https://www.openstreetmap.org/export/embed.html?marker=%f,%f&zoom=12",
+                            entry.getLatitude(), entry.getLongitude()
+                    );
                     mapView.getEngine().load(mapUrl);
                 });
             } catch (Exception e) {
