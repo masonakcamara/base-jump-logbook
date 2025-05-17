@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- JDBC connection -->
+        <property name="hibernate.connection.driver_class">org.sqlite.JDBC</property>
+        <property name="hibernate.connection.url">jdbc:sqlite:basejump.db</property>
+
+        <!-- SQL dialect for SQLite (community dialect) -->
+        <property name="hibernate.dialect">org.hibernate.dialect.SQLiteDialect</property>
+
+        <!-- Automatically create/update tables -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- Show SQL in console -->
+        <property name="hibernate.show_sql">true</property>
+
+        <!-- Register annotated classes -->
+        <mapping class="com.masonakcamara.basejump.model.JumpEntry"/>
+    </session-factory>
+</hibernate-configuration>
