@@ -37,17 +37,27 @@
         </AnchorPane>
 
         <!-- Right pane: temperature chart -->
+        <!-- Right pane: temperature + wind charts -->
         <AnchorPane>
-            <LineChart fx:id="tempChart" title="5-Day Temperature"
-                       AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
-                       AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
-                <xAxis>
-                    <NumberAxis label="Index"/>
-                </xAxis>
-                <yAxis>
-                    <NumberAxis label="°F"/>
-                </yAxis>
-            </LineChart>
+            <VBox AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+                  AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" spacing="10">
+                <LineChart fx:id="tempChart" title="5-Day Temperature">
+                    <xAxis>
+                        <NumberAxis fx:id="xAxis1" label="Index"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis fx:id="yAxis1" label="°F"/>
+                    </yAxis>
+                </LineChart>
+                <LineChart fx:id="windChart" title="5-Day Wind Speed">
+                    <xAxis>
+                        <NumberAxis fx:id="xAxis2" label="Index"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis fx:id="yAxis2" label="mph"/>
+                    </yAxis>
+                </LineChart>
+            </VBox>
         </AnchorPane>
     </items>
 </SplitPane>
