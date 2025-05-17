@@ -5,7 +5,6 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <SplitPane xmlns="http://javafx.com/javafx/20.0.1"
@@ -13,30 +12,24 @@
            fx:controller="com.masonakcamara.basejump.ui.DashboardController"
            orientation="HORIZONTAL">
     <items>
-        <!-- Left pane: jump table -->
         <AnchorPane prefWidth="400">
-            <TableView fx:id="jumpTable" prefWidth="400" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+            <TableView fx:id="jumpTable" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
                        AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
                 <columns>
-                    <TableColumn text="Date"       prefWidth="120"
-                                 cellValueFactory="${new PropertyValueFactory('dateTime')}"/>
-                    <TableColumn text="Location"   prefWidth="100"
-                                 cellValueFactory="${new PropertyValueFactory('objectName')}"/>
-                    <TableColumn text="Height"     prefWidth="80"
-                                 cellValueFactory="${new PropertyValueFactory('height')}"/>
-                    <TableColumn text="Type"       prefWidth="80"
-                                 cellValueFactory="${new PropertyValueFactory('jumpType')}"/>
+                    <TableColumn fx:id="colDate"     text="Date"     prefWidth="120"/>
+                    <TableColumn fx:id="colLocation" text="Location" prefWidth="100"/>
+                    <TableColumn fx:id="colHeight"   text="Height"   prefWidth="80"/>
+                    <TableColumn fx:id="colType"     text="Type"     prefWidth="80"/>
                 </columns>
             </TableView>
         </AnchorPane>
 
-        <!-- Right pane: temperature chart -->
         <AnchorPane>
             <LineChart fx:id="tempChart" title="5-Day Temperature"
                        AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
                        AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
                 <xAxis>
-                    <NumberAxis label="Forecast Index"/>
+                    <NumberAxis label="Index"/>
                 </xAxis>
                 <yAxis>
                     <NumberAxis label="°F"/>
