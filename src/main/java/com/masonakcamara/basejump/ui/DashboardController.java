@@ -14,8 +14,11 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
 import javafx.util.converter.DoubleStringConverter;
 
+import java.io.File;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +31,7 @@ public class DashboardController {
     @FXML private TableColumn<JumpEntry, ?> colHeight;
     @FXML private TableColumn<JumpEntry, ?> colType;
     @FXML private LineChart<Number, Number> tempChart;
-    @FXML private Button btnAdd, btnEdit, btnDelete;
+    @FXML private Button btnAdd, btnEdit, btnDelete, btnExport;
 
     private final JumpEntryDao dao = new JumpEntryDao();
     private final WeatherService weatherService = new WeatherService();
@@ -61,6 +64,7 @@ public class DashboardController {
                 refreshTable();
             }
         });
+        btnExport.setOnAction(e -> exportCsv());
 
         // auto-select first
         if (!jumpTable.getItems().isEmpty()) {
@@ -195,4 +199,39 @@ public class DashboardController {
             }
         }).start();
     }
+
+    private void exportCsv() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Save Jump Log as CSV");
+        chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("CSV Files", "*.csv")
+        );
+        File file = chooser.showSaveDialog(jumpTable.getScene().getWindow());
+        if (file == null) return;
+
+        try (PrintWriter out = new PrintWriter(file)) {
+            // header
+            out.println("DateTime,Location,Latitude,Longitude,Height,Container,MainChute,PilotChute,Slider,Type,MediaLink");
+            for (JumpEntry j : jumpTable.getItems()) {
+                out.printf("\"%s\",\"%s\",%.6f,%.6f,%.1f,\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n",
+                        j.getDateTime(),
+                        j.getObjectName(),
+                        j.getLatitude(),
+                        j.getLongitude(),
+                        j.getHeight(),
+                        j.getContainer(),
+                        j.getMainParachute(),
+                        j.getPilotChute(),
+                        j.getSliderPosition(),
+                        j.getJumpType(),
+                        j.getMediaLink() == null ? "" : j.getMediaLink()
+                );
+            }
+            new Alert(Alert.AlertType.INFORMATION, "Exported to " + file.getName()).show();
+        } catch (Exception ex) {
+            new Alert(Alert.AlertType.ERROR, "Export failed: " + ex.getMessage()).show();
+            ex.printStackTrace();
+        }
+    }
+
 }
