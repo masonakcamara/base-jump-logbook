@@ -38,16 +38,28 @@ public class WeatherService {
                 .GET()
                 .build();
         HttpResponse<InputStream> resp = client.send(req, HttpResponse.BodyHandlers.ofInputStream());
+
+        if (resp.statusCode() != 200) {
+            JsonNode errorNode = MAPPER.readTree(resp.body());
+            String msg = errorNode.has("message") ? errorNode.get("message").asText() : "HTTP " + resp.statusCode();
+            throw new RuntimeException("OpenWeatherMap error: " + msg);
+        }
+
         JsonNode root = MAPPER.readTree(resp.body());
-        JsonNode list = root.get("list");
+        JsonNode listNode = root.get("list");
+        if (listNode == null || !listNode.isArray()) {
+            throw new RuntimeException("Unexpected response from weather API: missing 'list' field");
+        }
 
         List<Forecast> forecasts = new ArrayList<>();
-        for (JsonNode item : list) {
+        for (JsonNode item : listNode) {
             LocalDateTime dt = LocalDateTime.parse(item.get("dt_txt").asText(), FORMATTER);
-            double temp = item.get("main").get("temp").asDouble();
-            double wind = item.get("wind").get("speed").asDouble();
+            JsonNode main = item.get("main");
+            JsonNode wind = item.get("wind");
+            double temp = main.get("temp").asDouble();
+            double windSpeed = wind.get("speed").asDouble();
             double pop = item.has("pop") ? item.get("pop").asDouble() : 0.0;
-            forecasts.add(new Forecast(dt, temp, wind, pop));
+            forecasts.add(new Forecast(dt, temp, windSpeed, pop));
         }
         return forecasts;
     }
