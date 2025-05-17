@@ -42,7 +42,7 @@ JavaFX desktop application for logging BASE jumps and viewing integrated 5-day w
 
 1. Clone the repository  
    ```bash
-   git clone https://github.com/<your-org>/base-jump-logbook.git
+   git clone https://github.com/masonakcamara/base-jump-logbook.git
    cd base-jump-logbook
    ```  
 2. Copy the API key template and insert your OpenWeatherMap key  
