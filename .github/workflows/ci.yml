@@ -35,8 +35,18 @@ jobs:
       - name: Package fat JAR
         run: mvn --batch-mode package
 
+      - name: Create native image
+        # Requires javafx-maven-plugin configured with jpackage
+        run: mvn --batch-mode javafx:jpackage
+
       - name: Upload JAR artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: base-jump-logbook
-          path: target/*-shaded.jar
+          name: base-jump-logbook-jar
+          path: target/base-jump-logbook-*.jar
+
+      - name: Upload native image
+        uses: actions/upload-artifact@v3
+        with:
+          name: base-jump-logbook-image
+          path: target/jpackage/*
