@@ -21,6 +21,11 @@
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
         <!-- Hibernate + SQLite (or swap to H2 if you prefer) -->
         <dependency>
             <groupId>org.hibernate.orm</groupId>
@@ -63,6 +68,14 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>com.masonakcamara.basejump.ui.BaseJumpLogbookApp</mainClass>
                 </configuration>
             </plugin>
         </plugins>
