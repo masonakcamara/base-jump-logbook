@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -22,31 +23,12 @@ jobs:
       - name: Cache Maven repository
         uses: actions/cache@v3
         with:
-          path: |
-            ~/.m2/repository
-            !~/.m2/repository/org/openjfx
+          path: ~/.m2/repository
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-m2-
+          restore-keys: ${{ runner.os }}-m2-
 
-      - name: Build and run tests
+      - name: Build & Test
         run: mvn --batch-mode clean verify
 
-      - name: Package fat JAR
+      - name: Package
         run: mvn --batch-mode package
-
-      - name: Create native image
-        # Requires javafx-maven-plugin configured with jpackage
-        run: mvn --batch-mode javafx:jpackage
-
-      - name: Upload JAR artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: base-jump-logbook-jar
-          path: target/base-jump-logbook-*.jar
-
-      - name: Upload native image
-        uses: actions/upload-artifact@v3
-        with:
-          name: base-jump-logbook-image
-          path: target/jpackage/*
