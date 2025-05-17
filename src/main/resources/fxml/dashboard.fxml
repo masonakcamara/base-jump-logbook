@@ -2,28 +2,40 @@
 
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 
 <SplitPane xmlns="http://javafx.com/javafx/20.0.1"
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.masonakcamara.basejump.ui.DashboardController"
            orientation="HORIZONTAL">
     <items>
+        <!-- Left pane: table + CRUD buttons -->
         <AnchorPane prefWidth="400">
-            <TableView fx:id="jumpTable" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
-                       AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
-                <columns>
-                    <TableColumn fx:id="colDate"     text="Date"     prefWidth="120"/>
-                    <TableColumn fx:id="colLocation" text="Location" prefWidth="100"/>
-                    <TableColumn fx:id="colHeight"   text="Height"   prefWidth="80"/>
-                    <TableColumn fx:id="colType"     text="Type"     prefWidth="80"/>
-                </columns>
-            </TableView>
+            <VBox AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+                  AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" spacing="5">
+                <TableView fx:id="jumpTable" prefHeight="500">
+                    <columns>
+                        <TableColumn fx:id="colDate"     text="Date"     prefWidth="120"/>
+                        <TableColumn fx:id="colLocation" text="Location" prefWidth="100"/>
+                        <TableColumn fx:id="colHeight"   text="Height"   prefWidth="80"/>
+                        <TableColumn fx:id="colType"     text="Type"     prefWidth="80"/>
+                    </columns>
+                </TableView>
+                <HBox spacing="10" alignment="CENTER">
+                    <Button fx:id="btnAdd"    text="Add"/>
+                    <Button fx:id="btnEdit"   text="Edit"/>
+                    <Button fx:id="btnDelete" text="Delete"/>
+                </HBox>
+            </VBox>
         </AnchorPane>
 
+        <!-- Right pane: temperature chart -->
         <AnchorPane>
             <LineChart fx:id="tempChart" title="5-Day Temperature"
                        AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
