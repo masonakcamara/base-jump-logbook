@@ -7,16 +7,41 @@ JavaFX desktop application for logging BASE jumps and viewing integrated 5-day w
 
 ## Table of Contents
 
-1. [Features](#features)
-2. [Tech Stack](#tech-stack)
-3. [Prerequisites](#prerequisites)
-4. [Installation](#installation)
-5. [Usage](#usage)  
+1. [Project Structure](#project-structure)
+2. [Features](#features)
+3. [Tech Stack](#tech-stack)
+4. [Prerequisites](#prerequisites)
+5. [Installation](#installation)
+6. [Usage](#usage)  
    - [Run from Source](#run-from-source)  
-6. [Building a Fat JAR](#building-a-fat-jar)
-7. [Environment Variable Option](#environment-variable-option)
-8. [Contributing](#contributing)
-9. [License](#license)
+7. [Building a Fat JAR](#building-a-fat-jar)
+8. [Environment Variable Option](#environment-variable-option)
+9. [Contributing](#contributing)
+10. [License](#license)
+
+## Project Structure
+base-jump-logbook/
+├── LICENSE
+├── README.md
+├── pom.xml
+├── src/
+│ ├── main/
+│ │ ├── java/
+│ │ │ └── com/masonakcamara/basejump/
+│ │ │ ├── api/ # WeatherService, Forecast DTO, WeatherApp
+│ │ │ ├── model/ # JPA entities and enums
+│ │ │ ├── persistence/ # HibernateUtil, JumpEntryDao
+│ │ │ └── ui/ # JavaFX App entry point, controller
+│ │ └── resources/
+│ │ ├── fxml/ # dashboard.fxml
+│ │ └── weather.properties.template
+│ └── test/
+│ └── java/
+│ └── com/masonakcamara/basejump/persistence/
+│ └── JumpEntryDaoTest.java
+└── .github/
+└── workflows/
+└── ci.yml
 
 ## Features
 
