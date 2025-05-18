@@ -91,4 +91,4 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 ## Demo
 
-![App Demo](docs/demo.png)
+![App Demo](demo/demo.png)
