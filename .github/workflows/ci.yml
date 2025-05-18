@@ -29,6 +29,3 @@ jobs:
 
       - name: Build & Test
         run: mvn --batch-mode clean verify
-
-      - name: Package
-        run: mvn --batch-mode package
