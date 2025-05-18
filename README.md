@@ -13,7 +13,6 @@ JavaFX desktop application for logging BASE jumps and viewing integrated 5-day w
 4. [Installation](#installation)
 5. [Usage](#usage)  
    - [Run from Source](#run-from-source)  
-   - [Download and Run](#download-and-run)  
 6. [Building a Fat JAR](#building-a-fat-jar)
 7. [Environment Variable Option](#environment-variable-option)
 8. [Contributing](#contributing)
@@ -61,33 +60,6 @@ JavaFX desktop application for logging BASE jumps and viewing integrated 5-day w
 
 ```bash
 mvn clean javafx:run
-```
-
-### Download and Run
-
-1. Download the latest JAR from GitHub Releases.  
-2. Obtain a JavaFX SDK (version 20+) and note its `lib` folder path.
-
-#### Windows (single line)
-
-```powershell
-java --module-path "C:\javafx-sdk-21.0.7\lib" --add-modules javafx.controls,javafx.fxml,javafx.web -jar base-jump-logbook-1.0-SNAPSHOT.jar
-```
-
-#### Windows (PowerShell, multi-line)
-
-```powershell
-java `
-  --module-path "C:\javafx-sdk-21.0.7\lib" `
-  --add-modules javafx.controls,javafx.fxml,javafx.web `
-  -jar base-jump-logbook-1.0-SNAPSHOT.jar
-```
-
-#### macOS / Linux
-
-```bash
-export PATH_TO_FX=~/javafx-sdk-20/lib
-java --module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml,javafx.web -jar base-jump-logbook-1.0-SNAPSHOT.jar
 ```
 
 ## Building a Fat JAR
